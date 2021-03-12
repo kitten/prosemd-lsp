@@ -4,7 +4,7 @@ import * as lsp from 'vscode-languageclient/node';
 
 import { getServerOrDownload } from './download';
 
-const TAG = 'v0.1.0-dev.0';
+const TAG = 'v0.1.0';
 
 let client: lsp.LanguageClient;
 
