@@ -1,0 +1,92 @@
+{
+  "name": "prosemd",
+  "displayName": "prosemd",
+  "description": "An experimental proofreading and linting language server for markdown files",
+  "author": "Phil Pluckthun <phil@kitten.sh>",
+  "version": "0.0.0",
+  "license": "MIT",
+  "publisher": "kitten",
+  "preview": true,
+  "private": true,
+  "icon": "icon.png",
+  "keywords": [
+    "language server",
+    "markdown",
+    "prose",
+    "writing",
+    "linting"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kitten/prosemd-lsp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kitten/prosemd-lsp/issues"
+  },
+  "homepage": "https://github.com/kitten/prosemd-lsp",
+  "engines": {
+    "vscode": "^1.52.0"
+  },
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension",
+  "scripts": {
+    "vscode:prepublish": "tsc -b",
+    "build": "tsc -b",
+    "watch": "tsc -b -w",
+    "lint": "eslint --ext=ts ."
+  },
+  "dependencies": {
+    "got": "^11.8.2",
+    "vscode-languageclient": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^12.12.0",
+    "@types/vscode": "^1.52.0",
+    "@typescript-eslint/eslint-plugin": "^4.17.0",
+    "@typescript-eslint/parser": "^4.17.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.2",
+    "vsce": "^1.87.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid",
+    "trailingComma": "es5"
+  },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-use-before-define": "off",
+      "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/member-ordering": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/interface-name-prefix": "off",
+      "@typescript-eslint/array-type": "off",
+      "prefer-arrow/prefer-arrow-functions": "off",
+      "sort-keys": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": true,
+          "arrowParens": "avoid",
+          "trailingComma": "es5"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+[package]
+name = "prosemd-lsp"
+description = "An experimental proofreading and linting language server for markdown files"
+homepage = "https://github.com/kitten/prosemd-lsp"
+documentation = "https://github.com/kitten/prosemd-lsp"
+repository = "https://github.com/kitten/prosemd-lsp"
+keywords = ["language server", "lsp", "markdown", "grammar"]
+categories = ["command-line-utilities"]
+version = "0.1.0-dev.0"
+authors = ["Phil Pluckthun <phil@kitten.sh>"]
+edition = "2018"
+license = "LGPL-2.1"
+
+build = "build.rs"
+include = [
+  "vendor/nlprule-data/**/*.bin.xz",
+  "vendor/tree-sitter-markdown/**/*.{c,cc,h}",
+  "src/**/*.rs",
+  "Cargo.toml",
+  "build.rs"
+]
+
+[dependencies]
+nlprule = "0.4.6"
+tree-sitter = "0.17.1"
+xi-rope = "0.3.0"
+diff = "0.1.12"
+url = "2.2.1"
+im = "15.0.0"
+lru = "0.6.5"
+env_logger = "0.8"
+log = "0.4"
+structopt = "0.3"
+serde = "1.0"
+serde_json = "1.0"
+flate2 = "1.0"
+
+[dependencies.async-std]
+version = "1.9.0"
+features = ["attributes", "unstable"]
+
+[dependencies.lspower]
+version = "0.6.2"
+default-features = false
+features = ["runtime-agnostic"]
+
+[build-dependencies]
+nlprule-build = "0.4.6"
+flate2 = "1.0"
+xz2 = "0.1"
+cc="*"
+
+[profile.dev]
+build-override = { opt-level = 2 }
+
+[[bin]]
+bench = false
+path = "src/main.rs"
+name = "prosemd-lsp"

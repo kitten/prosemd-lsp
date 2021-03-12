@@ -1,0 +1,77 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+  push:
+    branches: main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Cache Cargo
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-ci-${{ hashFiles('**/Cargo.lock') }}
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          components: clippy
+      - name: Check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+      - name: Clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: -- -D warnings
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+          components: rustfmt
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+  vscode:
+    name: VSCode Extension Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: npm install
+        working-directory: ./vscode
+        run: npm ci
+      - name: ESLint and Prettier
+        working-directory: ./vscode
+        run: npm run lint
+      - name: Typescript
+        working-directory: ./vscode
+        run: npm run build
