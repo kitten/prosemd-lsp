@@ -4,7 +4,7 @@ description = "An experimental proofreading and linting language server for mark
 homepage = "https://github.com/kitten/prosemd-lsp"
 documentation = "https://github.com/kitten/prosemd-lsp"
 repository = "https://github.com/kitten/prosemd-lsp"
-keywords = ["language server", "lsp", "markdown", "grammar"]
+keywords = ["language-server", "lsp", "markdown", "grammar"]
 categories = ["command-line-utilities"]
 version = "0.1.0"
 authors = ["Phil Pluckthun <phil@kitten.sh>"]
@@ -48,7 +48,7 @@ features = ["runtime-agnostic"]
 nlprule-build = "0.4.6"
 flate2 = "1.0"
 xz2 = "0.1"
-cc="*"
+cc="1.0"
 
 [profile.dev]
 build-override = { opt-level = 2 }
