@@ -25,7 +25,7 @@ provides suggestions on how to address them.
 
 **If you're using VSCode, all you have to do is install the `prosemd` extension.**
 
-[Read more about the VSCode extension.](https://github.com/kitten/prosemd-lsp/tree/main/vscode)
+[Install the extension from the VSCode Marketplace.](https://marketplace.visualstudio.com/items?itemName=kitten.prosemd)
 
 ### Manual Installation
 
