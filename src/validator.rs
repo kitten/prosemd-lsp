@@ -49,19 +49,18 @@ impl Validator {
     let rules = Rules::from_reader(&mut GzDecoder::new(RULES_GZ))
       .unwrap()
       .into_iter()
-      .map(|mut rule| {
-        rule.set_on(match rule.id().to_lowercase().as_ref() {
+      .filter(|rule| {
+        match rule.id().to_string().to_lowercase().as_ref() {
           // informally, "todo" is just as well accepted as "to-do"
           "to_do_hyphen.3" => false,
           "to_do_hyphen.2" => false,
-          _other => match rule.category_id().to_lowercase().as_ref() {
+          _other => match rule.category_name().to_string().to_lowercase().as_ref() {
             // Wikipedia's style guide contains a few rules that are too opinionated
             "wikipedia" => false,
             "typography" => false,
             _other => true,
           },
-        });
-        rule
+        }
       })
       .collect::<Rules>();
     Self {
@@ -72,7 +71,7 @@ impl Validator {
   }
 
   pub fn get_rule(&self, id: &str) -> Option<&Rule> {
-    self.rules.rule(id)
+    self.rules.rules().iter().find(|x| x.name() == id)
   }
 
   pub fn suggest(&self, text: &TextRange) -> Vec<TextSuggestion> {
@@ -98,8 +97,8 @@ fn compute_edit(text: &TextRange, suggestion: Suggestion) -> Option<TextSuggesti
   if !chunks.is_empty() {
     let start = chunks.first().unwrap().start;
     let end = chunks.last().unwrap().end;
-    let left = &text.clean_text[suggestion.start..suggestion.end];
-    let right = &suggestion.replacements.first().unwrap().clone();
+    let left = &text.clean_text[suggestion.span().start().char..suggestion.span().end().char];
+    let right = &suggestion.replacements().first().unwrap().clone();
     let mut diff = diff::chars(left, right);
 
     let mut replacements: Vec<Replacement> = Vec::new();
@@ -115,8 +114,8 @@ fn compute_edit(text: &TextRange, suggestion: Suggestion) -> Option<TextSuggesti
     }
 
     Some(TextSuggestion {
-      source: suggestion.source,
-      message: suggestion.message,
+      source: suggestion.source().to_string(),
+      message: suggestion.message().to_string(),
       replacements,
       start,
       end,
@@ -133,7 +132,7 @@ fn slice_textchunks_for_suggestion(text: &TextRange, suggestion: &Suggestion) ->
 
   for chunk in &text.chunks {
     length += chunk.clean_length;
-    if length >= suggestion.start {
+    if length >= suggestion.span().start().char {
       index += 1;
 
       let mut clean_length = chunk.clean_length;
@@ -141,12 +140,12 @@ fn slice_textchunks_for_suggestion(text: &TextRange, suggestion: &Suggestion) ->
       let mut end = chunk.end;
 
       if index == 0 {
-        clean_length = length - suggestion.start;
+        clean_length = length - suggestion.span().start().char;
         start = chunk.end - clean_length;
       }
 
-      if length >= suggestion.end {
-        let slice = length - suggestion.end;
+      if length >= suggestion.span().end().char {
+        let slice = length - suggestion.span().end().char;
         clean_length -= slice;
         end = chunk.end - slice;
         chunks.push(TextChunk {
