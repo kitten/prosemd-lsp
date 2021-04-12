@@ -21,7 +21,7 @@ include = [
 ]
 
 [dependencies]
-nlprule = "0.4.6"
+nlprule = "0.6"
 tree-sitter = "0.17.1"
 xi-rope = "0.3.0"
 diff = "0.1.12"
@@ -45,7 +45,7 @@ default-features = false
 features = ["runtime-agnostic"]
 
 [build-dependencies]
-nlprule-build = "0.4.6"
+nlprule-build = "0.6"
 flate2 = "1.0"
 xz2 = "0.1"
 cc="1.0"
