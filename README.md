@@ -72,7 +72,7 @@ client](https://neovim.io/doc/user/lsp.html) by adding it to `nvim-lspconfig`'s 
 servers:
 
 ```lua
-local lsp_configs = require('lspconfig/configs')
+local lsp_configs = require('lspconfig.configs')
 
 lsp_configs.prosemd = {
   default_config = {
