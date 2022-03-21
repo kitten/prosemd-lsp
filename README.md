@@ -67,29 +67,20 @@ executable.
 
 [First, make sure that you install the `prosemd-lsp` executable.](#manual-installation)
 
-You may add `prosemd` to [Neovim's built-in language server
+prosemd-lsp is available via [Neovim's built-in language server
 client](https://neovim.io/doc/user/lsp.html) by adding it to `nvim-lspconfig`'s list of language
 servers:
 
 ```lua
-local lsp_configs = require('lspconfig.configs')
 
-lsp_configs.prosemd = {
-  default_config = {
-    -- Update the path to prosemd-lsp
-    cmd = { "/usr/local/bin/prosemd-lsp", "--stdio" },
-    filetypes = { "markdown" },
-    root_dir = function(fname)
-      return lsp_util.find_git_ancestor(fname) or vim.fn.getcwd()
-    end,
-    settings = {},
+local servers = { 'prosemd_lsp', 'pyright', 'rust_analyzer', 'tsserver' }
+
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup {
+    on_attach = on_attach,
+    ...
   }
-}
-
--- Use your attach function here
-local lsp = require('lspconfig')
-lsp.prosemd.setup{ on_attach = on_attach }
+end
 ```
 
-Don't forget to swap out the binary's path at `cmd` to where you've installed the `prosemd-lsp`
-executable.
+`prosemd-lsp` should be on your environment `PATH`.
