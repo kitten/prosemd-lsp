@@ -5,24 +5,35 @@ on:
     tags:
       - "v*.*.*"
 
+permissions:
+  contents: write
+
 jobs:
   publish:
-    name: Publishing for ${{ matrix.os }}
+    name: Publishing binary for ${{ matrix.build }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        build: [macos-intel, macos-arm64, ubuntu-latest, windows-latest]
         rust: [stable]
         include:
-          - os: macos-latest
-            artifact_prefix: macos
+          - build: macos-arm64
+            os: macos-latest
+            artifact_prefix: macos-arm64
+            target: aarch64-apple-darwin
+            binary_postfix: ''
+          - build: macos-intel
+            os: macos-latest
+            artifact_prefix: macos-intel
             target: x86_64-apple-darwin
-            binary_postfix: ""
-          - os: ubuntu-latest
+            binary_postfix: ''
+          - build: ubuntu-latest
+            os: ubuntu-latest
             artifact_prefix: linux
             target: x86_64-unknown-linux-gnu
             binary_postfix: ""
-          - os: windows-latest
+          - build: windows-latest
+            os: windows-latest
             artifact_prefix: windows
             target: x86_64-pc-windows-msvc
             binary_postfix: ".exe"
@@ -32,6 +43,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
+          target: ${{ matrix.target }}
           override: true
       - name: Installing needed macOS dependencies
         if: matrix.os == 'macos-latest'
@@ -50,7 +62,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-cd-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.build }}-cargo-cd-${{ hashFiles('**/Cargo.lock') }}
       - name: Running cargo build
         uses: actions-rs/cargo@v1
         with:
@@ -98,7 +110,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-publish-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.build }}-cargo-publish-${{ hashFiles('**/Cargo.lock') }}
       - name: Installing dependencies
         run: |
           sudo apt-get update
@@ -125,9 +137,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.build }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.build }}-node-
       - name: npm install
         working-directory: ./vscode
         run: npm ci
